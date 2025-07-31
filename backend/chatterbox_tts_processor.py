@@ -120,28 +120,42 @@ class ChatterboxTTSProcessor:
         """Check if the TTS processor is ready"""
         return self._ready
 
-    def _split_text_into_chunks(self, text: str, max_chunk_length: int = 150) -> List[str]:
-        """Split text into smaller chunks for faster processing"""
+    def _split_text_into_sentences(self, text: str) -> List[str]:
+        """Split text into individual sentences for parallel processing"""
         import re
         
-        # Split by sentences first
+        # Split by sentences (including multiple punctuation)
         sentences = re.split(r'(?<=[.!?])\s+', text.strip())
-        chunks = []
-        current_chunk = ""
         
-        for sentence in sentences:
-            # If adding this sentence would exceed the limit, start a new chunk
-            if len(current_chunk) + len(sentence) > max_chunk_length and current_chunk:
-                chunks.append(current_chunk.strip())
-                current_chunk = sentence
+        # If no sentence breaks found but text is long, split by commas or every ~100 chars
+        if len(sentences) == 1 and len(text) > 100:
+            # Try splitting by commas first
+            comma_splits = re.split(r',\s+', text)
+            if len(comma_splits) > 1:
+                sentences = comma_splits
             else:
-                current_chunk += (" " + sentence if current_chunk else sentence)
+                # Split every ~80 characters at word boundaries
+                words = text.split()
+                current_chunk = ""
+                sentences = []
+                for word in words:
+                    if len(current_chunk) + len(word) > 80 and current_chunk:
+                        sentences.append(current_chunk.strip())
+                        current_chunk = word
+                    else:
+                        current_chunk += (" " + word if current_chunk else word)
+                if current_chunk:
+                    sentences.append(current_chunk.strip())
         
-        # Add the last chunk
-        if current_chunk:
-            chunks.append(current_chunk.strip())
+        # Clean up and filter out empty sentences
+        cleaned_sentences = []
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if sentence and len(sentence) > 10:  # Skip very short fragments
+                cleaned_sentences.append(sentence)
         
-        return chunks if chunks else [text]
+        logger.info(f"Split text into {len(cleaned_sentences)} chunks for streaming processing")
+        return cleaned_sentences if cleaned_sentences else [text]
 
     async def _generate_chunk_audio(self, text: str, audio_prompt_path: Optional[str] = None,
                                   exaggeration: float = 1.0, cfg_weight: float = 0.3, 
@@ -181,7 +195,7 @@ class ChatterboxTTSProcessor:
 
     async def text_to_speech(self, text: str, audio_prompt_path: Optional[str] = None, 
                            exaggeration: float = 1.0, cfg_weight: float = 0.3,
-                           fast_mode: bool = True, use_chunking: bool = True) -> Optional[Path]:
+                           fast_mode: bool = True, use_streaming: bool = True) -> Optional[Path]:
         """
         Convert text to speech and save it as an audio file
 
@@ -191,7 +205,7 @@ class ChatterboxTTSProcessor:
             exaggeration: Voice exaggeration factor (default: 1.0)
             cfg_weight: Classifier-free guidance weight (default: 0.3)
             fast_mode: Enable fast generation mode (default: True)
-            use_chunking: Enable text chunking for faster processing (default: True)
+            use_streaming: Enable streaming TTS (process sentences as ready) (default: True)
 
         Returns:
             Path to the audio file
@@ -211,35 +225,70 @@ class ChatterboxTTSProcessor:
             
             logger.info(f"Generating TTS for: {text[:100]}...")
             
-            # Check if we should use chunking for long texts
-            if use_chunking and len(text) > 200:
-                chunks = self._split_text_into_chunks(text, max_chunk_length=150)
-                logger.info(f"Split text into {len(chunks)} chunks for faster processing")
+            # Check if we should use sentence-based streaming (for any text > 30 chars)
+            if use_streaming and (len(text) > 30 or '.' in text or '!' in text or '?' in text):
+                sentences = self._split_text_into_sentences(text)
                 
-                audio_chunks = []
-                
-                # Process each chunk
-                for i, chunk in enumerate(chunks):
-                    logger.info(f"Processing chunk {i+1}/{len(chunks)}: {chunk[:50]}...")
+                if len(sentences) > 1:
+                    logger.info(f"🚀 STREAMING MODE: Processing first sentence immediately, others in parallel")
                     
-                    chunk_audio = await self._generate_chunk_audio(
-                        chunk, audio_prompt_path, exaggeration, cfg_weight, fast_mode
+                    # STREAMING APPROACH: Process first sentence immediately for faster response
+                    first_sentence = sentences[0]
+                    remaining_sentences = sentences[1:]
+                    
+                    logger.info(f"⚡ Processing first sentence: '{first_sentence[:50]}...'")
+                    first_audio = await self._generate_chunk_audio(
+                        first_sentence, audio_prompt_path, exaggeration, cfg_weight, fast_mode
                     )
                     
-                    if chunk_audio is not None:
-                        audio_chunks.append(chunk_audio)
+                    if first_audio is None:
+                        logger.error("Failed to generate audio for first sentence")
+                        return None
+                    
+                    if remaining_sentences:
+                        logger.info(f"🔄 Processing {len(remaining_sentences)} remaining sentences in parallel")
+                        
+                        # Process remaining sentences in parallel
+                        remaining_tasks = [
+                            self._generate_chunk_audio(
+                                sentence, audio_prompt_path, exaggeration, cfg_weight, fast_mode
+                            ) for sentence in remaining_sentences
+                        ]
+                        
+                        # Wait for remaining sentences
+                        remaining_chunks = await asyncio.gather(*remaining_tasks, return_exceptions=True)
+                        
+                        # Filter valid chunks
+                        valid_remaining = []
+                        for i, chunk in enumerate(remaining_chunks):
+                            if isinstance(chunk, Exception):
+                                logger.warning(f"Failed to generate sentence {i+2}: {chunk}")
+                            elif chunk is not None:
+                                valid_remaining.append(chunk)
+                        
+                        # Combine first sentence with remaining
+                        if valid_remaining:
+                            silence_samples = int(0.15 * 24000)  # 0.15s pause between sentences
+                            silence = torch.zeros(1, silence_samples)
+                            
+                            all_chunks = [first_audio]
+                            for chunk in valid_remaining:
+                                all_chunks.extend([silence, chunk])
+                            
+                            audio_data = torch.cat(all_chunks, dim=1)
+                            logger.info(f"✅ FAST: Combined {1 + len(valid_remaining)} sentences with natural pauses")
+                        else:
+                            logger.warning("Only first sentence succeeded, using that")
+                            audio_data = first_audio
                     else:
-                        logger.warning(f"Failed to generate audio for chunk {i+1}")
-                
-                # Concatenate all audio chunks
-                if audio_chunks:
-                    audio_data = torch.cat(audio_chunks, dim=1)  # Concatenate along time dimension
-                    logger.info(f"Concatenated {len(audio_chunks)} audio chunks")
+                        audio_data = first_audio
                 else:
-                    logger.error("No audio chunks were generated")
-                    return None
+                    # Single sentence, process normally
+                    audio_data = await self._generate_chunk_audio(
+                        text, audio_prompt_path, exaggeration, cfg_weight, fast_mode
+                    )
             else:
-                # Process as single text
+                # Process as single text (no punctuation or streaming disabled)
                 audio_data = await self._generate_chunk_audio(
                     text, audio_prompt_path, exaggeration, cfg_weight, fast_mode
                 )
