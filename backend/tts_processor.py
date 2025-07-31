@@ -49,9 +49,9 @@ class TTSProcessor:
             return "cpu"
     
     def _setup_mps_patch(self):
-        """Apply MPS-specific patches for M3 Mac compatibility"""
+        """Apply MPS-specific patches for M3 Mac compatibility (following official example)"""
         if self.device == "mps":
-            # Patch torch.load to use MPS-compatible loading
+            # Apply the exact same patch as the official example_for_mac.py
             map_location = torch.device(self.device)
             torch_load_original = torch.load
             
@@ -61,7 +61,7 @@ class TTSProcessor:
                 return torch_load_original(*args, **kwargs)
             
             torch.load = patched_torch_load
-            logger.info("✅ Applied MPS compatibility patches for M3 Mac")
+            logger.info("✅ Applied MPS compatibility patches (following official Mac example)")
 
     async def _initialize(self):
         """Initialize the Chatterbox TTS model"""
@@ -142,18 +142,9 @@ class TTSProcessor:
             else:
                 logger.info(f"🎙️ Generating TTS for: {text[:100]}{'...' if len(text) > 100 else ''}")
             
-            # Generate audio using Chatterbox with optimized parameters
-            # Based on official examples and recommendations
-            wav_tensor = self.model.generate(
-                text,
-                # Use default settings optimized for general use
-                exaggeration=0.5,  # Default emotion level
-                cfg_weight=0.5,    # Default CFG weight
-                temperature=0.8,   # Slightly lower for more consistent output
-                repetition_penalty=1.2,  # Prevent repetition
-                min_p=0.05,       # Minimum probability threshold
-                top_p=1.0,        # Keep full probability mass
-            )
+            # Generate audio using Chatterbox following the official Mac example pattern
+            # Use simpler parameters for better performance
+            wav_tensor = self.model.generate(text)
             
             # Save the audio using torchaudio (wav_tensor is already the right format)
             ta.save(str(final_audio_file), wav_tensor, self.model.sr)

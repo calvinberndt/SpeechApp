@@ -1,0 +1,104 @@
+INFO:     Will watch for changes in these directories: ['/Users/calvinberndt/_GitHub/SpeechApp']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [92170] using WatchFiles
+INFO:watchfiles.main:6 changes detected
+INFO:watchfiles.main:8 changes detected
+INFO:watchfiles.main:2 changes detected
+INFO:     Started server process [92285]
+INFO:     Waiting for application startup.
+INFO:backend.speech_processor:Initializing Kyutai STT model...
+INFO:backend.speech_processor:Kyutai STT model initialized successfully
+INFO:backend.llm_client:Checking Ollama server at http://localhost:11434...
+INFO:backend.llm_client:Found model: openhermes:latest
+INFO:backend.llm_client:LLM client initialized with model: openhermes
+INFO:backend.chatterbox_tts_processor:Initializing Chatterbox TTS model on mps...
+/Users/calvinberndt/_GitHub/SpeechApp/.venv/lib/python3.11/site-packages/diffusers/models/lora.py:393: FutureWarning: `LoRACompatibleLinear` is deprecated and will be removed in version 1.0.0. Use of `LoRACompatibleLinear` is deprecated. Please switch to PEFT backend by installing PEFT: `pip install peft`.
+  deprecate("LoRACompatibleLinear", "1.0.0", deprecation_message)
+INFO:root:input frame rate=25
+INFO:backend.chatterbox_tts_processor:Moving model components to mps...
+INFO:backend.chatterbox_tts_processor:✅ Chatterbox TTS model initialized successfully on mps
+INFO:     Application startup complete.
+loaded PerthNet (Implicit) at step 250,000
+INFO:     127.0.0.1:53562 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53559 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53561 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53564 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53566 - "HEAD /static/app.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53567 - "HEAD /static/style.css HTTP/1.1" 200 OK
+INFO:watchfiles.main:10 changes detected
+INFO:     ('127.0.0.1', 53573) - "WebSocket /ws/test-client" [accepted]
+INFO:main:Client test-client connected
+INFO:     connection open
+INFO:watchfiles.main:4 changes detected
+INFO:backend.llm_client:Generated response: Hello! How can I help you today?...
+INFO:backend.chatterbox_tts_processor:Generating TTS for: Hello! How can I help you today?...
+/opt/anaconda3/lib/python3.11/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+LlamaModel is using LlamaSdpaAttention, but `torch.nn.functional.scaled_dot_product_attention` does not support `output_attentions=True`. Falling back to the manual attention implementation, but specifying the manual implementation will be required from Transformers version v5.0.0 onwards. This warning can be removed using the argument `attn_implementation="eager"` when loading the model.
+INFO:watchfiles.main:4 changes detected
+Sampling:   0%|          | 0/1000 [00:00<?, ?it/s]We detected that you are passing `past_key_values` as a tuple of tuples. This is deprecated and will be removed in v4.47. Please convert your cache or use an appropriate `Cache` class (https://huggingface.co/docs/transformers/kv_cache#legacy-cache-format)
+Sampling:   0%|          | 1/1000 [00:00<04:36,  3.62it/s]Sampling:   0%|          | 3/1000 [00:00<02:00,  8.27it/s]Sampling:   0%|          | 5/1000 [00:00<01:31, 10.87it/s]Sampling:   1%|          | 7/1000 [00:00<01:19, 12.55it/s]Sampling:   1%|          | 9/1000 [00:00<01:12, 13.64it/s]Sampling:   1%|          | 11/1000 [00:00<01:08, 14.38it/s]Sampling:   1%|▏         | 13/1000 [00:01<01:07, 14.71it/s]Sampling:   2%|▏         | 15/1000 [00:01<01:05, 15.03it/s]Sampling:   2%|▏         | 17/1000 [00:01<01:05, 14.99it/s]Sampling:   2%|▏         | 19/1000 [00:01<01:05, 15.07it/s]Sampling:   2%|▏         | 21/1000 [00:01<01:04, 15.18it/s]Sampling:   2%|▏         | 23/1000 [00:01<01:04, 15.20it/s]Sampling:   2%|▎         | 25/1000 [00:01<01:04, 15.10it/s]Sampling:   3%|▎         | 27/1000 [00:01<01:07, 14.52it/s]Sampling:   3%|▎         | 29/1000 [00:02<01:05, 14.80it/s]Sampling:   3%|▎         | 31/1000 [00:02<01:04, 15.01it/s]Sampling:   3%|▎         | 33/1000 [00:02<01:04, 15.03it/s]Sampling:   4%|▎         | 35/1000 [00:02<01:04, 15.06it/s]Sampling:   4%|▎         | 37/1000 [00:02<01:03, 15.14it/s]Sampling:   4%|▍         | 39/1000 [00:02<01:03, 15.11it/s]Sampling:   4%|▍         | 41/1000 [00:02<01:04, 14.88it/s]Sampling:   4%|▍         | 43/1000 [00:03<01:04, 14.76it/s]Sampling:   4%|▍         | 45/1000 [00:03<01:04, 14.77it/s]Sampling:   5%|▍         | 46/1000 [00:03<01:07, 14.08it/s]
+INFO:watchfiles.main:4 changes detected
+INFO:watchfiles.main:4 changes detected
+INFO:watchfiles.main:42 changes detected
+INFO:backend.chatterbox_tts_processor:Audio tensor shape: torch.Size([1, 44160]), sample_rate: 24000
+INFO:backend.chatterbox_tts_processor:✅ TTS audio saved to audio_files/chatterbox_5479.wav
+INFO:main:Client test-client disconnected
+INFO:     connection closed
+INFO:watchfiles.main:3 changes detected
+INFO:     ('127.0.0.1', 53600) - "WebSocket /ws/test-client-2" [accepted]
+INFO:main:Client test-client-2 connected
+INFO:     connection open
+INFO:backend.llm_client:Generated response: Why don't scientists trust atoms?
+
+Because they ma...
+INFO:backend.chatterbox_tts_processor:Generating TTS for: Why don't scientists trust atoms?
+
+Because they make up everything!...
+/opt/anaconda3/lib/python3.11/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+Sampling:   0%|          | 0/1000 [00:00<?, ?it/s]Sampling:   0%|          | 1/1000 [00:00<03:14,  5.14it/s]Sampling:   0%|          | 2/1000 [00:00<03:20,  4.97it/s]Sampling:   0%|          | 3/1000 [00:00<03:07,  5.33it/s]Sampling:   0%|          | 4/1000 [00:00<02:48,  5.93it/s]Sampling:   0%|          | 5/1000 [00:00<03:13,  5.13it/s]Sampling:   1%|          | 6/1000 [00:01<03:24,  4.86it/s]Sampling:   1%|          | 7/1000 [00:01<03:07,  5.31it/s]Sampling:   1%|          | 8/1000 [00:01<03:00,  5.49it/s]Sampling:   1%|          | 9/1000 [00:01<02:38,  6.25it/s]Sampling:   1%|          | 10/1000 [00:01<02:27,  6.70it/s]Sampling:   1%|          | 12/1000 [00:01<01:51,  8.85it/s]Sampling:   1%|▏         | 14/1000 [00:02<01:32, 10.67it/s]Sampling:   2%|▏         | 16/1000 [00:02<01:23, 11.85it/s]Sampling:   2%|▏         | 18/1000 [00:02<01:15, 13.09it/s]Sampling:   2%|▏         | 20/1000 [00:02<01:10, 13.97it/s]Sampling:   2%|▏         | 22/1000 [00:02<01:05, 14.87it/s]Sampling:   2%|▏         | 24/1000 [00:02<01:02, 15.68it/s]Sampling:   3%|▎         | 26/1000 [00:02<01:00, 16.07it/s]Sampling:   3%|▎         | 28/1000 [00:02<00:58, 16.57it/s]Sampling:   3%|▎         | 30/1000 [00:02<01:00, 15.98it/s]Sampling:   3%|▎         | 32/1000 [00:03<01:01, 15.83it/s]Sampling:   3%|▎         | 34/1000 [00:03<01:03, 15.15it/s]Sampling:   4%|▎         | 36/1000 [00:03<01:03, 15.15it/s]Sampling:   4%|▍         | 38/1000 [00:03<01:02, 15.44it/s]Sampling:   4%|▍         | 40/1000 [00:03<01:01, 15.54it/s]Sampling:   4%|▍         | 42/1000 [00:03<01:03, 15.18it/s]Sampling:   4%|▍         | 44/1000 [00:03<01:02, 15.31it/s]Sampling:   5%|▍         | 46/1000 [00:04<01:00, 15.71it/s]Sampling:   5%|▍         | 48/1000 [00:04<01:00, 15.70it/s]Sampling:   5%|▌         | 50/1000 [00:04<01:03, 14.85it/s]Sampling:   5%|▌         | 52/1000 [00:04<01:36,  9.87it/s]INFO:watchfiles.main:5 changes detected
+Sampling:   5%|▌         | 54/1000 [00:04<01:31, 10.39it/s]WARNING:  WatchFiles detected changes in 'tts_optimization_test.py', 'tts_performance_test.py', 'test_fallback_mechanism.py', 'test_chatterbox_basic.py', 'test_chatterbox_tts.py'. Reloading...
+Sampling:   6%|▌         | 56/1000 [00:05<01:28, 10.61it/s]Sampling:   6%|▌         | 58/1000 [00:05<01:29, 10.54it/s]Sampling:   6%|▌         | 60/1000 [00:05<01:30, 10.41it/s]Sampling:   6%|▌         | 62/1000 [00:05<01:30, 10.34it/s]Sampling:   6%|▋         | 64/1000 [00:05<01:32, 10.08it/s]Sampling:   7%|▋         | 66/1000 [00:06<01:34,  9.93it/s]Sampling:   7%|▋         | 68/1000 [00:06<01:38,  9.46it/s]Sampling:   7%|▋         | 69/1000 [00:06<01:42,  9.12it/s]Sampling:   7%|▋         | 70/1000 [00:06<01:48,  8.60it/s]Sampling:   7%|▋         | 71/1000 [00:06<02:25,  6.37it/s]Sampling:   7%|▋         | 72/1000 [00:06<02:19,  6.65it/s]Sampling:   7%|▋         | 73/1000 [00:07<02:12,  7.02it/s]Sampling:   7%|▋         | 74/1000 [00:07<02:12,  7.01it/s]Sampling:   8%|▊         | 75/1000 [00:07<02:04,  7.43it/s]Sampling:   8%|▊         | 76/1000 [00:07<02:04,  7.44it/s]Sampling:   8%|▊         | 77/1000 [00:07<02:07,  7.26it/s]Sampling:   8%|▊         | 78/1000 [00:07<02:08,  7.17it/s]Sampling:   8%|▊         | 79/1000 [00:07<02:00,  7.64it/s]Sampling:   8%|▊         | 80/1000 [00:08<02:01,  7.54it/s]Sampling:   8%|▊         | 81/1000 [00:08<01:53,  8.11it/s]Sampling:   8%|▊         | 82/1000 [00:08<01:51,  8.26it/s]Sampling:   8%|▊         | 83/1000 [00:08<01:53,  8.10it/s]Sampling:   8%|▊         | 84/1000 [00:08<01:46,  8.58it/s]Sampling:   9%|▊         | 86/1000 [00:08<01:32,  9.91it/s]Sampling:   9%|▉         | 88/1000 [00:08<01:23, 10.88it/s]Sampling:   9%|▉         | 90/1000 [00:08<01:19, 11.45it/s]Sampling:   9%|▉         | 92/1000 [00:09<01:19, 11.39it/s]Sampling:   9%|▉         | 94/1000 [00:09<01:17, 11.67it/s]Sampling:  10%|▉         | 96/1000 [00:09<01:18, 11.52it/s]Sampling:  10%|▉         | 98/1000 [00:09<01:16, 11.86it/s]Sampling:  10%|█         | 100/1000 [00:09<01:17, 11.61it/s]Sampling:  10%|█         | 102/1000 [00:09<01:15, 11.90it/s]Sampling:  10%|█         | 104/1000 [00:10<01:14, 12.06it/s]Sampling:  11%|█         | 106/1000 [00:10<01:14, 11.93it/s]Sampling:  11%|█         | 108/1000 [00:10<01:16, 11.68it/s]Sampling:  11%|█         | 110/1000 [00:10<01:28, 10.08it/s]Sampling:  11%|█         | 111/1000 [00:10<01:26, 10.25it/s]
+INFO:backend.chatterbox_tts_processor:Audio tensor shape: torch.Size([1, 106560]), sample_rate: 24000
+INFO:backend.chatterbox_tts_processor:✅ TTS audio saved to audio_files/chatterbox_244.wav
+INFO:     Shutting down
+INFO:main:Client test-client-2 disconnected
+INFO:     connection closed
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [92285]
+INFO:watchfiles.main:17 changes detected
+INFO:watchfiles.main:6 changes detected
+INFO:watchfiles.main:8 changes detected
+INFO:watchfiles.main:2 changes detected
+INFO:     Started server process [93624]
+INFO:     Waiting for application startup.
+INFO:backend.speech_processor:Initializing Kyutai STT model...
+INFO:backend.speech_processor:Kyutai STT model initialized successfully
+INFO:backend.llm_client:Checking Ollama server at http://localhost:11434...
+INFO:backend.llm_client:Found model: openhermes:latest
+INFO:backend.llm_client:LLM client initialized with model: openhermes
+INFO:backend.chatterbox_tts_processor:Initializing Chatterbox TTS model on mps...
+/Users/calvinberndt/_GitHub/SpeechApp/.venv/lib/python3.11/site-packages/diffusers/models/lora.py:393: FutureWarning: `LoRACompatibleLinear` is deprecated and will be removed in version 1.0.0. Use of `LoRACompatibleLinear` is deprecated. Please switch to PEFT backend by installing PEFT: `pip install peft`.
+  deprecate("LoRACompatibleLinear", "1.0.0", deprecation_message)
+INFO:root:input frame rate=25
+INFO:watchfiles.main:1 change detected
+INFO:watchfiles.main:5 changes detected
+INFO:backend.chatterbox_tts_processor:Moving model components to mps...
+INFO:backend.chatterbox_tts_processor:✅ Chatterbox TTS model initialized successfully on mps
+INFO:     Application startup complete.
+loaded PerthNet (Implicit) at step 250,000
+INFO:     127.0.0.1:53615 - "HEAD /audio/chatterbox_244.wav HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:53618 - "GET /audio/chatterbox_244.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53623 - "GET /audio/non-existent.wav HTTP/1.1" 200 OK
+INFO:     ('127.0.0.1', 53627) - "WebSocket /ws/realtime-test" [accepted]
+INFO:main:Client realtime-test connected
+INFO:     connection open
+INFO:backend.llm_client:Generated response: Artificial Intelligence, or AI, refers to the deve...
+INFO:backend.chatterbox_tts_processor:Generating TTS for: Artificial Intelligence, or AI, refers to the development of computer systems that can perform tasks...
+/opt/anaconda3/lib/python3.11/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+LlamaModel is using LlamaSdpaAttention, but `torch.nn.functional.scaled_dot_product_attention` does not support `output_attentions=True`. Falling back to the manual attention implementation, but specifying the manual implementation will be required from Transformers version v5.0.0 onwards. This warning can be removed using the argument `attn_implementation="eager"` when loading the model.
+Sampling:   0%|          | 0/1000 [00:00<?, ?it/s]We detected that you are passing `past_key_values` as a tuple of tuples. This is deprecated and will be removed in v4.47. Please convert your cache or use an appropriate `Cache` class (https://huggingface.co/docs/transformers/kv_cache#legacy-cache-format)
+Sampling:   0%|          | 1/1000 [00:00<05:27,  3.05it/s]Sampling:   0%|          | 3/1000 [00:00<02:15,  7.38it/s]Sampling:   0%|          | 5/1000 [00:00<01:38, 10.10it/s]Sampling:   1%|          | 7/1000 [00:00<01:24, 11.71it/s]Sampling:   1%|          | 9/1000 [00:00<01:18, 12.64it/s]Sampling:   1%|          | 11/1000 [00:00<01:13, 13.49it/s]Sampling:   1%|▏         | 13/1000 [00:01<01:09, 14.14it/s]Sampling:   2%|▏         | 15/1000 [00:01<01:08, 14.48it/s]Sampling:   2%|▏         | 17/1000 [00:01<01:06, 14.73it/s]Sampling:   2%|▏         | 19/1000 [00:01<01:05, 14.88it/s]Sampling:   2%|▏         | 21/1000 [00:01<01:06, 14.76it/s]Sampling:   2%|▏         | 23/1000 [00:01<01:06, 14.67it/s]Sampling:   2%|▎         | 25/1000 [00:01<01:07, 14.54it/s]Sampling:   3%|▎         | 27/1000 [00:02<01:06, 14.61it/s]Sampling:   3%|▎         | 29/1000 [00:02<01:06, 14.56it/s]Sampling:   3%|▎         | 31/1000 [00:02<01:06, 14.50it/s]Sampling:   3%|▎         | 33/1000 [00:02<01:06, 14.61it/s]Sampling:   4%|▎         | 35/1000 [00:02<01:05, 14.75it/s]Sampling:   4%|▎         | 37/1000 [00:02<01:06, 14.47it/s]Sampling:   4%|▍         | 39/1000 [00:02<01:06, 14.43it/s]Sampling:   4%|▍         | 41/1000 [00:03<01:06, 14.47it/s]Sampling:   4%|▍         | 43/1000 [00:03<01:05, 14.50it/s]Sampling:   4%|▍         | 45/1000 [00:03<01:06, 14.40it/s]Sampling:   5%|▍         | 47/1000 [00:03<01:10, 13.53it/s]Sampling:   5%|▍         | 49/1000 [00:03<01:20, 11.83it/s]Sampling:   5%|▌         | 51/1000 [00:03<01:21, 11.67it/s]Sampling:   5%|▌         | 53/1000 [00:04<01:26, 10.98it/s]Sampling:   6%|▌         | 55/1000 [00:04<01:22, 11.49it/s]Sampling:   6%|▌         | 57/1000 [00:04<01:20, 11.69it/s]Sampling:   6%|▌         | 59/1000 [00:04<01:20, 11.62it/s]Sampling:   6%|▌         | 61/1000 [00:04<01:22, 11.38it/s]Sampling:   6%|▋         | 63/1000 [00:04<01:24, 11.13it/s]Sampling:   6%|▋         | 65/1000 [00:05<01:40,  9.30it/s]Sampling:   7%|▋         | 67/1000 [00:05<01:37,  9.53it/s]Sampling:   7%|▋         | 69/1000 [00:05<01:34,  9.86it/s]Sampling:   7%|▋         | 71/1000 [00:05<01:27, 10.60it/s]Sampling:   7%|▋         | 73/1000 [00:05<01:21, 11.33it/s]Sampling:   8%|▊         | 75/1000 [00:06<01:18, 11.78it/s]Sampling:   8%|▊         | 77/1000 [00:06<01:16, 12.12it/s]Sampling:   8%|▊         | 79/1000 [00:06<01:17, 11.92it/s]Sampling:   8%|▊         | 81/1000 [00:06<01:14, 12.33it/s]Sampling:   8%|▊         | 83/1000 [00:06<01:13, 12.52it/s]Sampling:   8%|▊         | 85/1000 [00:06<01:12, 12.62it/s]Sampling:   9%|▊         | 87/1000 [00:07<01:13, 12.38it/s]Sampling:   9%|▉         | 89/1000 [00:07<01:17, 11.76it/s]Sampling:   9%|▉         | 91/1000 [00:07<01:27, 10.38it/s]Sampling:   9%|▉         | 93/1000 [00:07<01:25, 10.63it/s]Sampling:  10%|▉         | 95/1000 [00:07<01:23, 10.87it/s]Sampling:  10%|▉         | 97/1000 [00:08<01:22, 11.01it/s]Sampling:  10%|▉         | 99/1000 [00:08<01:18, 11.48it/s]Sampling:  10%|█         | 101/1000 [00:08<01:15, 11.94it/s]Sampling:  10%|█         | 103/1000 [00:08<01:15, 11.88it/s]Sampling:  10%|█         | 105/1000 [00:08<01:16, 11.76it/s]Sampling:  11%|█         | 107/1000 [00:08<01:15, 11.88it/s]Sampling:  11%|█         | 109/1000 [00:09<01:17, 11.55it/s]Sampling:  11%|█         | 111/1000 [00:09<01:17, 11.45it/s]
