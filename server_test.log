@@ -1,0 +1,30 @@
+INFO:backend.chatterbox_tts_processor:Applied torch.load patch for mps compatibility
+INFO:     Started server process [95480]
+INFO:     Waiting for application startup.
+INFO:backend.speech_processor:Initializing Kyutai STT model...
+INFO:backend.speech_processor:Kyutai STT model initialized successfully
+INFO:backend.llm_client:Checking Ollama server at http://localhost:11434...
+INFO:backend.llm_client:Found model: openhermes:latest
+INFO:backend.llm_client:LLM client initialized with model: openhermes
+INFO:backend.chatterbox_tts_processor:Initializing Chatterbox TTS model on mps...
+/Users/calvinberndt/_GitHub/SpeechApp/.venv/lib/python3.11/site-packages/diffusers/models/lora.py:393: FutureWarning: `LoRACompatibleLinear` is deprecated and will be removed in version 1.0.0. Use of `LoRACompatibleLinear` is deprecated. Please switch to PEFT backend by installing PEFT: `pip install peft`.
+  deprecate("LoRACompatibleLinear", "1.0.0", deprecation_message)
+INFO:root:input frame rate=25
+INFO:backend.chatterbox_tts_processor:Moving model components to mps...
+INFO:backend.chatterbox_tts_processor:✅ Chatterbox TTS model initialized successfully on mps
+INFO:     Application startup complete.
+ERROR:    [Errno 48] error while attempting to bind on address ('127.0.0.1', 8000): address already in use
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+loaded PerthNet (Implicit) at step 250,000
+Exception ignored in: <function LLMClient.__del__ at 0x121fa11c0>
+Traceback (most recent call last):
+  File "/Users/calvinberndt/_GitHub/SpeechApp/backend/llm_client.py", line 223, in __del__
+  File "/opt/anaconda3/lib/python3.11/asyncio/tasks.py", line 381, in create_task
+RuntimeError: no running event loop
+sys:1: RuntimeWarning: coroutine 'ClientSession.close' was never awaited
+ERROR:asyncio:Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x16bf9add0>
+ERROR:asyncio:Unclosed connector
+connections: ['[(<aiohttp.client_proto.ResponseHandler object at 0x16bf45cc0>, 7309.4)]']
+connector: <aiohttp.connector.TCPConnector object at 0x16bfa90d0>
