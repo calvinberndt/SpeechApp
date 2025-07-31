@@ -123,7 +123,7 @@ class TTSProcessor:
             if fast_mode:
                 logger.info("🏃 Fast mode enabled - using macOS say for immediate response")
             else:
-                logger.info("🔄 Chatterbox TTS model not available, using fallback")
+                logger.info("🔄 Chatterbox TTS model not available, using macOS say fallback")
             return await self._fallback_to_say(text)
             
         try:
@@ -268,10 +268,4 @@ class TTSProcessor:
             logger.error("💔 Both Chatterbox TTS and macOS say fallback have failed")
             return None
 
-    async def _generate_audio_with_say(self, text: str, audio_file: Path) -> bool:
-        """
-        Generate audio using macOS say command as fallback (removed, not required)
-        """
-        logger.warning("macOS say command fallback is deprecated and not available.")
-        return False
 
