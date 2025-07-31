@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice AI Assistant</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Voice AI Assistant</h1>
+            <div class="status-bar">
+                <div class="status-indicator" id="status-indicator"></div>
+                <span class="status-text" id="status-text">Ready to listen...</span>
+            </div>
+        </div>
+
+        <!-- AI Orb -->
+        <div class="orb-container">
+            <div class="ai-orb" id="ai-orb">
+                <div class="orb-inner"></div>
+                <div class="orb-pulse"></div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="control-btn" id="voice-btn">
+                <span class="btn-icon">🎤</span>
+                <span class="btn-text">Hold to Talk</span>
+            </button>
+            
+            <div class="text-input-container">
+                <input type="text" id="text-input" placeholder="Type your message here..." />
+                <button class="send-btn" id="send-btn">Send</button>
+            </div>
+        </div>
+
+        <!-- Conversation Display -->
+        <div class="conversation">
+            <div class="conversation-header">
+                <h3>Conversation</h3>
+                <button class="clear-btn" id="clear-btn">Clear</button>
+            </div>
+            <div class="messages" id="messages">
+                <div class="welcome-message">
+                    <p>👋 Hi! I'm your AI voice assistant. You can:</p>
+                    <ul>
+                        <li>Hold the microphone button and speak</li>
+                        <li>Type a message and press Send</li>
+                        <li>Ask me questions or have a conversation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="settings-toggle">
+            <button id="settings-toggle-btn">⚙️</button>
+        </div>
+        
+        <div class="settings-panel" id="settings-panel">
+            <h3>Settings</h3>
+            <div class="setting-group">
+                <label for="model-select">AI Model:</label>
+                <select id="model-select">
+                    <option value="openhermes">OpenHermes</option>
+                    <option value="qwen2.5:4b">Qwen 2.5 4B</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="voice-enabled">Voice Output:</label>
+                <input type="checkbox" id="voice-enabled" checked>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio element for playback -->
+    <audio id="audio-playback" preload="auto"></audio>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
