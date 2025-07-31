@@ -51,12 +51,19 @@ class TTSProcessor:
                 self.model_name, 
                 compute_dtype="float16"
             )
-            self._ready = True
-            logger.info("Dia TTS model initialized successfully")
+            
+            # Verify model is properly loaded
+            if self.model is not None:
+                self._ready = True
+                logger.info("✅ Dia TTS model initialized successfully")
+            else:
+                raise Exception("Model loaded but is None")
+                
         except Exception as e:
-            logger.warning(f"Dia TTS model initialization failed: {e}")
-            logger.info("Falling back to macOS say command for TTS")
-            # Set ready to true so we can use the fallback
+            logger.error(f"❌ Dia TTS model initialization failed: {e}")
+            logger.warning("⚠️  Falling back to macOS say command for TTS")
+            # Set model to None to ensure fallback is used
+            self.model = None
             self._ready = True
     
     def is_ready(self) -> bool:
@@ -76,6 +83,11 @@ class TTSProcessor:
         if not self._ready:
             logger.error("TTS model is not ready")
             return None
+        
+        # If Dia model is not available, use fallback immediately
+        if self.model is None:
+            logger.info("Dia TTS model not available, using fallback")
+            return await self._fallback_to_say(text)
             
         try:
             # Create unique filename
