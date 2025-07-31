@@ -22,7 +22,7 @@ from fastapi import Request
 
 from backend.speech_processor import SpeechProcessor
 from backend.llm_client import LLMClient
-from backend.tts_processor import TTSProcessor
+from backend.chatterbox_tts_processor import ChatterboxTTSProcessor
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -38,7 +38,7 @@ templates = Jinja2Templates(directory="templates")
 # Initialize processors
 speech_processor = SpeechProcessor()
 llm_client = LLMClient()
-tts_processor = TTSProcessor()
+tts_processor = ChatterboxTTSProcessor()
 
 # Initialize processors async function
 async def initialize_processors():
@@ -257,6 +257,7 @@ async def health_check():
             "tts": tts_processor.is_ready()
         }
     }
+
 
 async def startup_event():
     """Initialize processors on startup"""

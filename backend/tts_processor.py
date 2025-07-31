@@ -46,16 +46,17 @@ class TTSProcessor:
         """Initialize the Dia TTS model"""
         try:
             logger.info("Initializing Dia TTS model...")
-            # Try to load the Dia model with optimized settings
+            # Load the Dia model with optimized settings for CPU
             self.model = Dia.from_pretrained(
                 self.model_name, 
-                compute_dtype="float16"
+                compute_dtype="float16"  # Keep float16 for memory efficiency
             )
             
             # Verify model is properly loaded
             if self.model is not None:
                 self._ready = True
                 logger.info("✅ Dia TTS model initialized successfully")
+                logger.warning("⚠️  Running on CPU - expect slower generation times (2-3 minutes per request)")
             else:
                 raise Exception("Model loaded but is None")
                 
@@ -70,12 +71,13 @@ class TTSProcessor:
         """Check if the TTS processor is ready"""
         return self._ready
     
-    async def text_to_speech(self, text: str) -> Optional[Path]:
+    async def text_to_speech(self, text: str, fast_mode: bool = False) -> Optional[Path]:
         """
         Convert text to speech and save it as an audio file
         
         Args:
             text: Text to convert
+            fast_mode: If True, use macOS say for immediate response
             
         Returns:
             Path to the audio file
@@ -84,9 +86,12 @@ class TTSProcessor:
             logger.error("TTS model is not ready")
             return None
         
-        # If Dia model is not available, use fallback immediately
-        if self.model is None:
-            logger.info("Dia TTS model not available, using fallback")
+        # If fast_mode is enabled or Dia model is not available, use fallback immediately
+        if fast_mode or self.model is None:
+            if fast_mode:
+                logger.info("Fast mode enabled - using macOS say for immediate response")
+            else:
+                logger.info("Dia TTS model not available, using fallback")
             return await self._fallback_to_say(text)
             
         try:
@@ -98,28 +103,32 @@ class TTSProcessor:
             # Ensure audio_files directory exists
             final_audio_file.parent.mkdir(exist_ok=True)
             
-            # Format text for Dia TTS (use [S1] speaker tag)
+            # Format text for Dia TTS (use [S1] speaker tag as recommended)
             formatted_text = f"[S1] {text}"
-            logger.info(f"Generating TTS for: {formatted_text[:100]}...")
             
-            # Generate audio using the Dia TTS model with the correct parameters
+            # Limit text length for faster generation (keep under 20s of audio as per guidelines)
+            if len(formatted_text) > 200:  # Rough estimate for reasonable length
+                formatted_text = formatted_text[:200] + "..."
+                logger.info(f"Truncated long text to: {formatted_text}")
+            else:
+                logger.info(f"Generating TTS for: {formatted_text[:100]}...")
+            
+            # Generate audio using optimized parameters for CPU performance
+            # Based on official examples with adjustments for speed
             audio_data = self.model.generate(
-                text=formatted_text,
-                max_tokens=3072,
-                cfg_scale=3.0,
-                temperature=1.2,
-                top_p=0.95,
-                use_torch_compile=False,
-                cfg_filter_top_k=45,
-                verbose=False,
+                formatted_text,  # Pass text as positional argument (like in examples)
+                use_torch_compile=False,  # Keep disabled for stability
+                verbose=False,  # Reduce logging overhead
+                cfg_scale=3.0,  # Keep default from examples
+                temperature=1.5,  # Slightly lower than example for faster convergence
+                top_p=0.90,  # Match example
+                cfg_filter_top_k=50,  # Match example
+                # Note: max_tokens removed - let model decide
             )
 
-            # Make sure audio_data is in a list if single output
-            if not isinstance(audio_data, list):
-                audio_data = [audio_data]
-
-            # Save the audio file using the correct method
-            self.model.save_audio(str(audio_file), audio_data[0])
+            # Save the audio file directly (audio_data should be the right format)
+            # No need to wrap in list - the example shows direct usage
+            self.model.save_audio(str(audio_file), audio_data)
             
             if audio_file.exists():
                 import shutil
