@@ -56,25 +56,14 @@ class ChatterboxTTSProcessor:
                 # Move model components to the target device
                 if hasattr(self.model, 't3'):
                     self.model.t3 = self.model.t3.to(self.device)
-                    # Enable half precision for faster inference (if supported)
-                    if self.device == "mps":
-                        try:
-                            self.model.t3 = self.model.t3.half()
-                            logger.info("Enabled half precision for T3 model")
-                        except Exception as e:
-                            logger.warning(f"Half precision not supported for T3: {e}")
                 
                 if hasattr(self.model, 's3gen'):
                     self.model.s3gen = self.model.s3gen.to(self.device)
-                    if self.device == "mps":
-                        try:
-                            self.model.s3gen = self.model.s3gen.half()
-                            logger.info("Enabled half precision for S3Gen model")
-                        except Exception as e:
-                            logger.warning(f"Half precision not supported for S3Gen: {e}")
                 
                 if hasattr(self.model, 've'):
                     self.model.ve = self.model.ve.to(self.device)
+                
+                logger.info("Moved all model components to MPS device (without half precision to avoid type conflicts)")
             
             # Set models to eval mode for inference optimization
             if hasattr(self.model, 't3'):
@@ -170,19 +159,20 @@ class ChatterboxTTSProcessor:
                 
                 # Fast mode optimizations
                 if fast_mode:
-                    # Optimize parameters for faster synthesis
-                    generation_kwargs.update({
-                        "cfg_weight": 0.2,  # Lower CFG for faster generation
-                        "temperature": 0.6,  # Lower temperature for faster sampling
-                        "min_p": 0.1,  # Higher min_p for faster sampling
-                        "top_p": 0.8,  # Lower top_p for faster sampling
-                        "repetition_penalty": 1.1,  # Lower penalty for speed
-                    })
+                    # Only override with supported parameters for faster synthesis
+                    generation_kwargs["cfg_weight"] = 0.2  # Lower CFG for faster generation
+                    generation_kwargs["temperature"] = 0.6  # Lower temperature for faster sampling
+                    generation_kwargs["min_p"] = 0.1  # Higher min_p for faster sampling
+                    generation_kwargs["top_p"] = 0.8  # Lower top_p for faster sampling
+                    generation_kwargs["repetition_penalty"] = 1.1  # Lower penalty for speed
+                    logger.info(f"Applied fast mode parameters: {list(generation_kwargs.keys())}")
                 
                 # Add audio prompt if provided
                 if audio_prompt_path and Path(audio_prompt_path).exists():
                     generation_kwargs["audio_prompt_path"] = audio_prompt_path
+                    logger.info(f"Using audio prompt: {audio_prompt_path}")
                 
+                logger.info(f"Calling ChatterboxTTS.generate with parameters: {list(generation_kwargs.keys())}")
                 return self.model.generate(**generation_kwargs)
         
         except Exception as e:
