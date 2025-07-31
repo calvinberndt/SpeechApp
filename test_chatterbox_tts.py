@@ -1,37 +1,38 @@
 #!/usr/bin/env python3
 """
-Test script for ChatterboxTTS integration
+Test script for Chatterbox TTS integration
 """
 
 import asyncio
 import logging
+import os
 import soundfile as sf
 from pathlib import Path
-from backend.chatterbox_tts_processor import ChatterboxTTSProcessor
+from backend.tts_processor import TTSProcessor
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 async def test_chatterbox_tts():
-    """Test the ChatterboxTTS processor"""
+    """Test the Chatterbox TTS processor"""
     
     print("="*60)
-    print("Testing ChatterboxTTS integration...")
+    print("Testing Chatterbox TTS integration...")
     print("="*60)
     
     # Initialize TTS processor
-    tts_processor = ChatterboxTTSProcessor()
+    tts_processor = TTSProcessor()
     
     # Initialize the model
-    print("\n1. Initializing ChatterboxTTS model...")
+    print("\n1. Initializing Chatterbox TTS model...")
     await tts_processor._initialize()
     
     if not tts_processor.is_ready():
         print("❌ TTS processor failed to initialize")
         return
         
-    print(f"✅ ChatterboxTTS processor initialized successfully on {tts_processor.device}\n")
+    print("✅ TTS processor initialized successfully\n")
     
     # Function to verify audio file
     def verify_audio_file(audio_file, test_name):
@@ -43,8 +44,14 @@ async def test_chatterbox_tts():
             
             # Check if it's a proper audio file
             try:
-                info = sf.info(str(audio_file))
-                print(f"   🎵 Format: {info.format}, Sample rate: {info.samplerate} Hz, Duration: {info.duration:.2f}s")
+                if audio_file.suffix.lower() in ['.wav', '.aiff']:
+                    if audio_file.suffix.lower() == '.wav':
+                        info = sf.info(str(audio_file))
+                        print(f"   🎵 Format: {info.format}, Sample rate: {info.samplerate} Hz, Duration: {info.duration:.2f}s")
+                    else:
+                        print(f"   🎵 Format: AIFF (macOS say fallback)")
+                else:
+                    print(f"   ⚠️  Unknown audio format: {audio_file.suffix}")
             except Exception as e:
                 print(f"   ⚠️  Could not read audio file info: {e}")
             return True
@@ -52,26 +59,25 @@ async def test_chatterbox_tts():
             print(f"❌ {test_name}: Audio file generation failed")
             return False
     
-    # Verify audio_files directory exists
+    # Verify audio_files directory exists and is writable
     audio_dir = Path("audio_files")
     if not audio_dir.exists():
         print(f"📁 Creating audio_files directory: {audio_dir.absolute()}")
         audio_dir.mkdir(exist_ok=True)
     else:
         print(f"📁 Audio files directory: {audio_dir.absolute()}")
-        current_files = list(audio_dir.glob('*'))
-        print(f"   Currently contains {len(current_files)} files")
+        print(f"   Currently contains {len(list(audio_dir.glob('*')))} files")
     
     print("\n2. Testing various text inputs...")
     print("-" * 40)
     
     # Test cases with different characteristics
     test_cases = [
-        ("Basic test", "Hello! This is a test of the ChatterboxTTS model integration."),
+        ("Basic test", "Hello! This is a test of the Chatterbox TTS model integration."),
         ("Short text", "Short text."),
-        ("Numbers test", "Testing numbers: 123, 4567."),
-        ("Long text", "This is a longer text example that tests how the TTS handles larger input sizes and different punctuation! Are there any issues? Let's see how well it performs with extended content."),
-        ("Mixed content", "The quick brown fox jumps over the lazy dog. 42 is the answer!"),
+        ("Long text", "This is a longer text example that tests how the TTS handles larger input sizes and different punctuation! Are there any issues? Let's see how well it performs with extended content that includes multiple sentences."),
+        ("Numbers and symbols", "Testing numbers: 123, 4567. Special characters: @!#$%^6*()? How does it handle these?"),
+        ("Mixed content", "The quick brown fox jumps over the lazy dog. 42 is the answer to life, the universe, and everything!"),
     ]
     
     successful_tests = 0
@@ -94,35 +100,11 @@ async def test_chatterbox_tts():
     print(f"Success rate: {(successful_tests/total_tests)*100:.1f}%")
     
     # List generated files
-    generated_files = list(audio_dir.glob('chatterbox_*.wav'))
-    print(f"\n📁 ChatterboxTTS audio files: {len(generated_files)}")
-    if generated_files:
-        print("   Recent files:")
-        for file in sorted(generated_files, key=lambda x: x.stat().st_mtime)[-5:]:
-            file_size = file.stat().st_size
-            print(f"   • {file.name} ({file_size:,} bytes)")
-    
-    print("\n4. Performance Analysis")
-    print("-" * 40)
-    if successful_tests > 0:
-        print("✅ ChatterboxTTS integration is working correctly")
-        print("✅ Audio files are being saved to the audio_files directory")
-        print("✅ Generated audio files have proper format and metadata")
-        print(f"✅ Using device: {tts_processor.device}")
-        
-        if tts_processor.device == "mps":
-            print("🚀 Using Apple Silicon GPU acceleration for faster generation!")
-        elif tts_processor.device == "cpu":
-            print("💻 Using CPU mode - consider upgrading to Apple Silicon for GPU acceleration")
-        
-        if successful_tests < total_tests:
-            print("⚠️  Some tests failed - check error messages above")
-    else:
-        print("❌ All tests failed - check ChatterboxTTS installation and configuration")
-    
-    print("\n" + "="*60)
-    print("ChatterboxTTS test completed!")
-    print("="*60)
+    generated_files = list(audio_dir.glob('*'))
+    print(f"\n📁 Audio files in directory: {len(generated_files)}")
+    for file in sorted(generated_files)[-5:]:  # Show last 5 files
+        file_size = file.stat().st_size
+        print(f"   {file.name} ({file_size:,} bytes)")
 
 if __name__ == "__main__":
     asyncio.run(test_chatterbox_tts())
